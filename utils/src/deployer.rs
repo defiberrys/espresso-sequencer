@@ -470,15 +470,15 @@ pub async fn deploy(
             .await?;
         let stake_table = PermissionedStakeTable::new(stake_table_address, l1.clone());
 
-        // Transfer ownership to the multisig wallet if provided.
-        if let Some(owner) = multisig_address {
-            tracing::info!(
-                ?stake_table_address,
-                ?owner,
-                "transferring PermissionedStakeTable ownership to multisig",
-            );
-            stake_table.transfer_ownership(owner).send().await?.await?;
-        }
+        // // Transfer ownership to the multisig wallet if provided.
+        // if let Some(owner) = multisig_address {
+        //     tracing::info!(
+        //         ?stake_table_address,
+        //         ?owner,
+        //         "transferring PermissionedStakeTable ownership to multisig",
+        //     );
+        //     stake_table.transfer_ownership(owner).send().await?.await?;
+        // }
     }
 
     Ok(contracts)

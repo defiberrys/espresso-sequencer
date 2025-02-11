@@ -137,6 +137,10 @@ pub async fn update_stake_table(
         .index(account_index)?
         .build()?
         .with_chain_id(chain_id);
+
+    let addr = wallet.address();
+    tracing::error!("{addr:?}");
+
     let l1 = Arc::new(SignerMiddleware::new(provider.clone(), wallet));
 
     tracing::error!("contract address {contract_address:?}");

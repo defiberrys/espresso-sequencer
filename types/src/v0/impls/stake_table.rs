@@ -49,6 +49,8 @@ impl StakeTables {
     /// should not significantly affect performance to fetch all events and
     /// perform the computation in this functions once per epoch.
     pub fn from_l1_events(updates: Vec<StakersUpdated>) -> Self {
+        assert!(updates.len() > 0);
+
         let changes_per_node = updates
             .into_iter()
             .flat_map(|event| {
@@ -84,6 +86,10 @@ impl StakeTables {
                 da_members.push(node.into());
             }
         }
+
+        tracing::error!(">>1 {consensus_stake_table:?}");
+        tracing::error!(">>1 {da_members:?}");
+
         Self::new(consensus_stake_table.into(), da_members.into())
     }
 }
@@ -247,12 +253,16 @@ impl EpochCommittees {
             map.insert(Epoch::new(epoch), members.clone());
         }
 
+        let address = instance_state.chain_config.stake_table_contract;
+
+        tracing::error!(">>> ww {address:?}");
+
         Self {
             non_epoch_committee: members,
             state: map,
             _epoch_size: epoch_size,
             l1_client: instance_state.l1_client.clone(),
-            contract_address: instance_state.chain_config.stake_table_contract,
+            contract_address: address,
         }
     }
 
@@ -488,8 +498,11 @@ impl Membership<SeqTypes> for EpochCommittees {
         block_header: Header,
     ) -> Option<Box<dyn FnOnce(&mut Self) + Send>> {
         let address = self.contract_address?;
+
+        tracing::error!(">>> pp {address:?}");
+
         self.l1_client
-            .get_stake_table(address.to_alloy(), block_header.height())
+            .get_stake_table(address.to_alloy(), block_header.l1_head())
             .await
             .ok()
             .map(|stake_table| -> Box<dyn FnOnce(&mut Self) + Send> {

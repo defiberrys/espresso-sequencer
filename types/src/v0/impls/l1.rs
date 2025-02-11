@@ -838,6 +838,8 @@ impl L1Client {
         let stake_table_contract =
             PermissionedStakeTableInstance::new(contract, self.provider.clone());
 
+        tracing::error!(">>> xx {block:?}");
+
         let events: Vec<StakersUpdated> = stake_table_contract
             .StakersUpdated_filter()
             .from_block(0)

@@ -48,7 +48,7 @@ pub async fn main() -> anyhow::Result<()> {
             )
             .await
         }
-        #[cfg(feature = "pos")]
+        // #[cfg(feature = "pos")]
         (EpochVersion::VERSION, _) => {
             run(
                 genesis,
